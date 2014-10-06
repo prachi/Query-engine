@@ -58,8 +58,9 @@ class AuthorityCallback extends Actor with ActorLogging {
       val element = entity.asString.split("json_callback=")
 			val url = element(1).split("&html_callback")(0)
       val asciiUrl = URLDecoder.decode(url, "utf-8")
+      val urlAuth = asciiUrl + "&auth_token=ZjfA6diAnBSZbzJZTaMg"
 
-			val response = search(asciiUrl)
+			val response = search(urlAuth)
         response onSuccess {
           case x =>
             val queryRes = for {
