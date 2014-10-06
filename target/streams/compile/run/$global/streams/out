@@ -1,7 +1,7 @@
 [0m[[0minfo[0m] [0mRunning com.synup.Listener [0m
 [0m[[0mdebug[0m] [0mWaiting for threads to exit or System.exit to be called.[0m
 [0m[[0mdebug[0m] [0m  Classpath:[0m
-[0m[[0mdebug[0m] [0m	/Users/pichu/Projects/Query-Engine/target/scala-2.11/classes[0m
+[0m[[0mdebug[0m] [0m	/Users/pichu/Projects/dom-engine/target/scala-2.11/classes[0m
 [0m[[0mdebug[0m] [0m	/Users/pichu/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.11.2.jar[0m
 [0m[[0mdebug[0m] [0m	/Users/pichu/.ivy2/cache/com.typesafe.akka/akka-stream-experimental_2.11/jars/akka-stream-experimental_2.11-0.6.jar[0m
 [0m[[0mdebug[0m] [0m	/Users/pichu/.ivy2/cache/com.typesafe.akka/akka-actor_2.11/jars/akka-actor_2.11-2.3.6.jar[0m
@@ -110,4 +110,4 @@
 [0m[[0mdebug[0m] [0m	/Users/pichu/.ivy2/cache/commons-pool/commons-pool/jars/commons-pool-1.6.jar[0m
 [0m[[0mdebug[0m] [0mWaiting for thread run-main-0 to terminate.[0m
 [0m[[0mdebug[0m] [0m	Thread run-main-0 exited.[0m
-[0m[[0mdebug[0m] [0mWaiting for thread SynupQueryEngine-akka.actor.default-dispatcher-6 to terminate.[0m
+[0m[[0mdebug[0m] [0mWaiting for thread SynupQueryEngine-akka.actor.default-dispatcher-3 to terminate.[0m

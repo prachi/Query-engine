@@ -59,7 +59,7 @@ class AuthorityCallback extends Actor with ActorLogging {
 			val url = element(1).split("&html_callback")(0)
       val asciiUrl = URLDecoder.decode(url, "utf-8")
 
-			val response = search(url)
+			val response = search(asciiUrl)
         response onSuccess {
           case x =>
             val queryRes = for {

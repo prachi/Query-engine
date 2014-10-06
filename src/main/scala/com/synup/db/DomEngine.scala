@@ -19,6 +19,21 @@ class DomEngine extends Actor with ActorLogging {
 
 	def receive = {	
 		case DomRequest(msg_type, request_id, source, site, url) => 
+			if (site == "authority"){
+				val check = client.hexists(url, "DOM")
+				check map {
+					case check if (check) =>
+						log.info(s"$url already present, updating requestId with $request_id")
+						for {
+							_ <- client.hset(url, "RequestID", request_id)
+							Some(value) <- client.hget(url, "RequestID")
+						} yield value
+					case check: Boolean =>
+					log.info(s"$url is not present in cache, fetching DOM")
+					domGetter ! DomRequest(msg_type, request_id, source, site, url)	
+				}
+			}
+			else {
 			val check = client.hexists(url, "DOM")
 			check map {
 				case check if (check) =>
@@ -33,6 +48,7 @@ class DomEngine extends Actor with ActorLogging {
 					log.info(s"$url is not present in cache, fetching DOM")
 					domGetter ! DomRequest(msg_type, request_id, source, site, url)	
 			}
+		}
 		
 		case DomResponse(DomRequest(msg_type, request_id, source, site, url), dom) =>
 			if (site == "authority"){
