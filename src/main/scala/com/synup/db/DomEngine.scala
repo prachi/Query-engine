@@ -30,7 +30,7 @@ class DomEngine extends Actor with ActorLogging {
 							Some(domValue) <- client.hget(url, "DOM")
 							if (domValue.length > 5)
 							actor = context.actorSelection("akka://SynupQueryEngine/user/DomQueryEngine")
-							_ = actor ! QueryResponse(msg_type, s"$request_id, $reqID", source, site, url, "Success", url)
+							_ = actor ! QueryResponse(msg_type, request_id, source, site, url, "Success", url)
 						} yield reqID
 					case check: Boolean =>
 					log.info(s"$url is not present in cache, fetching DOM")
@@ -46,7 +46,7 @@ class DomEngine extends Actor with ActorLogging {
 						Some(reqID) <- client.hget(url, "RequestID")
 						_ <- client.hset(url, "RequestID", s"$request_id, $reqID")
 						actor = context.actorSelection("akka://SynupQueryEngine/user/DomQueryEngine")
-						_ = actor ! QueryResponse(msg_type, s"$request_id, $reqID", source, site, url, "Success", url)
+						_ = actor ! QueryResponse(msg_type, request_id, source, site, url, "Success", url)
 					} yield reqID
 				case check: Boolean =>
 					log.info(s"$url is not present in cache, fetching DOM")
