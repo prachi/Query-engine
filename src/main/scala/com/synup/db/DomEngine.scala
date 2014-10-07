@@ -27,6 +27,7 @@ class DomEngine extends Actor with ActorLogging {
 						for {
 							_ <- client.hset(url, "RequestID", request_id)
 							Some(value) <- client.hget(url, "RequestID")
+							// get dom if length >2 then return cacheid
 						} yield value
 					case check: Boolean =>
 					log.info(s"$url is not present in cache, fetching DOM")
