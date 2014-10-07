@@ -23,12 +23,15 @@ class DomEngine extends Actor with ActorLogging {
 				val check = client.hexists(url, "DOM")
 				check map {
 					case check if (check) =>
-						log.info(s"$url already present, updating requestId with $request_id")
+						log.info(s"$url already present, appending requestId: $request_id")
 						for {
-							_ <- client.hset(url, "RequestID", request_id)
-							Some(value) <- client.hget(url, "RequestID")
-							// get dom if length >2 then return cacheid
-						} yield value
+							Some(reqID)	<- client.hget(url, "RequestID")
+							_ <- client.hset(url, "RequestID", s"$request_id, $reqID")
+							Some(domValue) <- client.hget(url, "DOM")
+							if (domValue.length > 5)
+							actor = context.actorSelection("akka://SynupQueryEngine/user/DomQueryEngine")
+							_ = actor ! QueryResponse(msg_type, s"$request_id, $reqID", source, site, url, "Success", url)
+						} yield reqID
 					case check: Boolean =>
 					log.info(s"$url is not present in cache, fetching DOM")
 					domGetter ! DomRequest(msg_type, request_id, source, site, url)	
@@ -40,11 +43,11 @@ class DomEngine extends Actor with ActorLogging {
 				case check if (check) =>
 					log.info(s"$url already present, updating requestId with $request_id")
 					for {
-						_ <- client.hset(url, "RequestID", request_id)
-						Some(value) <- client.hget(url, "RequestID")
+						Some(reqID) <- client.hget(url, "RequestID")
+						_ <- client.hset(url, "RequestID", s"$request_id, $reqID")
 						actor = context.actorSelection("akka://SynupQueryEngine/user/DomQueryEngine")
-						_ = actor ! QueryResponse(msg_type, value, source, site, url, "Success", url)
-					} yield value
+						_ = actor ! QueryResponse(msg_type, s"$request_id, $reqID", source, site, url, "Success", url)
+					} yield reqID
 				case check: Boolean =>
 					log.info(s"$url is not present in cache, fetching DOM")
 					domGetter ! DomRequest(msg_type, request_id, source, site, url)	
@@ -52,20 +55,18 @@ class DomEngine extends Actor with ActorLogging {
 		}
 		
 		case DomResponse(DomRequest(msg_type, request_id, source, site, url), dom) =>
-			if (site == "authority"){
-				val queryRes = for {
-				set <- client.hmset(url, Map("RequestID" -> request_id, "DOM" -> dom))
-				expire <- client.expire(url, 86400)
+			val queryRes =
+				if (site == "authority") for {
+					set <- client.hmset(url, Map("RequestID" -> request_id, "DOM" -> dom))
+					expire <- client.expire(url, 86400)
 				} yield expire
-			} else {
-				val queryRes = for {
-				set <- client.hmset(url, Map("RequestID" -> request_id, "DOM" -> dom))
-				expire <- client.expire(url, 86400)
-				Some(value) <- client.hget(url, "RequestID")
-				actor = context.actorSelection("akka://SynupQueryEngine/user/DomQueryEngine")
-				_ = actor ! QueryResponse(msg_type, value, source, site, url, "Success", url)
+				else for {
+					set <- client.hmset(url, Map("RequestID" -> request_id, "DOM" -> dom))
+					expire <- client.expire(url, 86400)
+					Some(value) <- client.hget(url, "RequestID")
+					actor = context.actorSelection("akka://SynupQueryEngine/user/DomQueryEngine")
+					_ = actor ! QueryResponse(msg_type, value, source, site, url, "Success", url)
 				} yield value
-			}
 
 		case queryResponse: QueryResponse =>
 			context.actorSelection("akka://SynupQueryEngine/user/DomQueryEngine") ! queryResponse
