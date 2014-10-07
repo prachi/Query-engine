@@ -16,7 +16,7 @@ class Publisher(implicit system: ActorSystem)  extends Actor with ActorLogging {
 
   import concurrent.duration._
   val factory = new ConnectionFactory()
-  //factory.setHost("162.243.247.227")
+  factory.setHost("192.168.1.139")
   val connectionActor: ActorRef = system.actorOf(ConnectionActor.props(factory, reconnectionDelay = 10.seconds), "rabbitmq-publisher")
   def setupPublisher(channel: Channel, self: ActorRef) {
     val queue = channel.queueDeclare("query.response", true, false, false, null).getQueue

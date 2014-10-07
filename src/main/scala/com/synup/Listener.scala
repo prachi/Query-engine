@@ -15,7 +15,7 @@ object Listener extends App with LazyLogging {
   implicit val system = ActorSystem("SynupQueryEngine")
 
   val factory = new ConnectionFactory()
-  //factory.setHost("162.243.247.227")
+  factory.setHost("192.168.1.139")
 
   val connectionActor: ActorRef = system.actorOf(ConnectionActor.props(factory, reconnectionDelay = 10.seconds), "rabbitmq-subscriber")
   val domQueryEngineActor = system.actorOf(Props(new DomQueryEngine()), "DomQueryEngine")
