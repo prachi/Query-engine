@@ -106,7 +106,7 @@ class DomGetter extends Actor with ActorLogging {
 					case Success(dom) => sendingActor ! DomResponse(DomRequest("query_response", request_id, source, site, url), dom.entity.asString)
     			// retry logic
     			case Failure(e) => e.printStackTrace
-    											 sendingActor ! QueryResponse("query_response", request_id, source, site, url, "Failed", "")
+    											 sendingActor ! QueryResponse("query_response", request_id, source, site, url, "Failed")
 				}
 			} else {
 				val response = getDom(url, "") //proxy)
@@ -114,7 +114,7 @@ class DomGetter extends Actor with ActorLogging {
     			case Success(dom) => sendingActor ! DomResponse(DomRequest("query_response", request_id, source, site, url), dom.entity.asString)
     			// retry logic
     			case Failure(e) => e.printStackTrace
-    											 sendingActor ! QueryResponse("query_response", request_id, source, site, url, "Failed", "")
+    											 sendingActor ! QueryResponse("query_response", request_id, source, site, url, "Failed")
   			}
 			}
 	}

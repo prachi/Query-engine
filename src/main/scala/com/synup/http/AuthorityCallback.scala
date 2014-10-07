@@ -67,7 +67,7 @@ class AuthorityCallback extends Actor with ActorLogging {
               set <- client.hset(asciiKeyword, "DOM", x.entity.asString)
               Some(value) <- client.hget(asciiKeyword, "RequestID")
               actor = context.actorSelection("akka://SynupQueryEngine/user/DomQueryEngine")
-              _ = actor ! QueryResponse("query_response", value, "listing", "authority", asciiKeyword, "Success", asciiKeyword)
+              _ = actor ! QueryResponse("query_response", value, "listing", "authority", asciiKeyword, "Success")
             } yield value
 				}
 	}
